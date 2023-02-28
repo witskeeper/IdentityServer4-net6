@@ -1,3 +1,8 @@
+# This is a forked version of archived IdentityServer4 project ported from .net core 3.1 to .net6
+Link to original project:
+https://github.com/IdentityServer/IdentityServer4
+All the rest of the project was left as-is - only this message was added and projects underneath ./src/IdentityServer4/IdentityServer4.sln solution were adapted to be compatible with .net6
+
 # Important update
 This project is not maintained anymore. This repo will be archived when .NET Core 3.1 end of support is reached (13th Dec 2022). All new development is happening in the new [Duende Software](https://github.com/duendesoftware) organization. 
 
