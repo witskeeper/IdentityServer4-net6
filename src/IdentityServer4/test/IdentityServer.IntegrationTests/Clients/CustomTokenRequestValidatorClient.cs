@@ -45,7 +45,7 @@ namespace IdentityServer.IntegrationTests.Clients
             });
 
             var fields = GetFields(response);
-            fields.Should().Contain("custom", "custom");
+            fields.Should().ContainKey("custom", "custom");
         }
 
         [Fact]
@@ -64,7 +64,7 @@ namespace IdentityServer.IntegrationTests.Clients
             });
 
             var fields = GetFields(response);
-            fields.Should().Contain("custom", "custom");
+            fields.Should().ContainKey("custom", "custom");
         }
 
         [Fact]
@@ -92,7 +92,7 @@ namespace IdentityServer.IntegrationTests.Clients
             });
 
             var fields = GetFields(response);
-            fields.Should().Contain("custom", "custom");
+            fields.Should().ContainKey("custom", "custom");
         }
 
         [Fact]
@@ -114,7 +114,7 @@ namespace IdentityServer.IntegrationTests.Clients
             });
 
             var fields = GetFields(response);
-            fields.Should().Contain("custom", "custom");
+            fields.Should().ContainKey("custom", "custom");
         }
 
         private Dictionary<string, object> GetFields(TokenResponse response)

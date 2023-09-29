@@ -45,13 +45,13 @@ namespace IdentityServer.IntegrationTests.Clients
         {
             var token = CreateToken(ClientId);
             var requestBody = new FormUrlEncodedContent(new Dictionary<string, string>
-                {
-                    { "client_id", ClientId },
-                    { "client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer" },
-                    { "client_assertion", token },
-                    { "grant_type", "client_credentials" },
-                    { "scope", "api1" }
-                });
+            {
+                { "client_id", ClientId },
+                { "client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer" },
+                { "client_assertion", token },
+                { "grant_type", "client_credentials" },
+                { "scope", "api1" }
+            });
 
             var response = await GetToken(requestBody);
 
@@ -67,7 +67,7 @@ namespace IdentityServer.IntegrationTests.Clients
             {
                 Address = TokenEndpoint,
 
-                ClientId = ClientId,
+                ClientId = string.Empty,
                 ClientAssertion =
                 {
                     Type = OidcConstants.ClientAssertionTypes.JwtBearer,
@@ -88,7 +88,7 @@ namespace IdentityServer.IntegrationTests.Clients
             var response = await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
             {
                 Address = TokenEndpoint,
-                ClientId = "client",
+                ClientId = string.Empty,
 
                 ClientAssertion =
                 {
@@ -101,7 +101,7 @@ namespace IdentityServer.IntegrationTests.Clients
 
             AssertValidToken(response);
         }
-        
+
         [Fact]
         public async Task Valid_client_with_token_replay_should_fail()
         {
@@ -111,7 +111,7 @@ namespace IdentityServer.IntegrationTests.Clients
             {
                 Address = TokenEndpoint,
 
-                ClientId = ClientId,
+                ClientId = string.Empty,
                 ClientAssertion =
                 {
                     Type = OidcConstants.ClientAssertionTypes.JwtBearer,
@@ -122,13 +122,13 @@ namespace IdentityServer.IntegrationTests.Clients
             });
 
             AssertValidToken(response);
-            
+
             // replay
             response = await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
             {
                 Address = TokenEndpoint,
 
-                ClientId = ClientId,
+                ClientId = string.Empty,
                 ClientAssertion =
                 {
                     Type = OidcConstants.ClientAssertionTypes.JwtBearer,
@@ -149,14 +149,13 @@ namespace IdentityServer.IntegrationTests.Clients
             {
                 Address = TokenEndpoint,
 
-                ClientId = ClientId,
+                ClientId = string.Empty,
                 ClientAssertion =
                 {
                     Type = OidcConstants.ClientAssertionTypes.JwtBearer,
                     Value = "invalid"
                 },
-
-                Scope = "api1"
+                Scope = "api1",
             });
 
             response.IsError.Should().Be(true);
@@ -174,7 +173,7 @@ namespace IdentityServer.IntegrationTests.Clients
             {
                 Address = TokenEndpoint,
 
-                ClientId = clientId,
+                ClientId = string.Empty,
                 ClientAssertion =
                 {
                     Type = OidcConstants.ClientAssertionTypes.JwtBearer,
@@ -204,12 +203,12 @@ namespace IdentityServer.IntegrationTests.Clients
             response.RefreshToken.Should().BeNull();
 
             var payload = GetPayload(response);
-            
+
             payload.Count().Should().Be(8);
             payload.Should().Contain("iss", "https://idsvr4");
             payload.Should().Contain("client_id", ClientId);
             payload.Keys.Should().Contain("iat");
-            
+
             var scopes = payload["scope"] as JArray;
             scopes.First().ToString().Should().Be("api1");
 
@@ -231,21 +230,22 @@ namespace IdentityServer.IntegrationTests.Clients
             var now = nowOverride ?? DateTime.UtcNow;
 
             var token = new JwtSecurityToken(
-                    clientId,
-                    TokenEndpoint,
-                    new List<Claim>()
-                    {
-                        new Claim("jti", Guid.NewGuid().ToString()),
-                        new Claim(JwtClaimTypes.Subject, clientId),
-                        new Claim(JwtClaimTypes.IssuedAt, new DateTimeOffset(now).ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
-                    },
-                    now,
-                    now.AddMinutes(1),
-                    new SigningCredentials(
-                        new X509SecurityKey(certificate),
-                        SecurityAlgorithms.RsaSha256
-                    )
-                );
+                clientId,
+                TokenEndpoint,
+                new List<Claim>()
+                {
+                    new Claim("jti", Guid.NewGuid().ToString()),
+                    new Claim(JwtClaimTypes.Subject, clientId),
+                    new Claim(JwtClaimTypes.IssuedAt, new DateTimeOffset(now).ToUnixTimeSeconds().ToString(),
+                        ClaimValueTypes.Integer64)
+                },
+                now,
+                now.AddMinutes(1),
+                new SigningCredentials(
+                    new X509SecurityKey(certificate),
+                    SecurityAlgorithms.RsaSha256
+                )
+            );
 
             var tokenHandler = new JwtSecurityTokenHandler();
             return tokenHandler.WriteToken(token);
