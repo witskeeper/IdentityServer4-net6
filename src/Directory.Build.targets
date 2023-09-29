@@ -17,7 +17,6 @@
         <EntityFrameworkVersion>7.0.11</EntityFrameworkVersion>
         <IdentityServerVersion>4.1.2-*</IdentityServerVersion>
     </PropertyGroup>
-
     <ItemGroup>
         <!--build related-->
         <!-- <PackageReference Include="MinVer" Version="2.3.0" PrivateAssets="All" /> -->

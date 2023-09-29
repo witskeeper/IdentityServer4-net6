@@ -1,0 +1,7 @@
+<Project>
+    <PropertyGroup>
+        <VersionPrefix>1.2.0</VersionPrefix>
+        <VersionSuffix></VersionSuffix>
+        <PackageId>NetCorePal.$(AssemblyName)</PackageId>
+    </PropertyGroup>
+</Project>
